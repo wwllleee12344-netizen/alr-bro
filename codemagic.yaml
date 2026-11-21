@@ -1,0 +1,54 @@
+workflows:
+  build-bple-dmg:
+    name: Build BPLE macOS DMG
+    max_build_duration: 30
+    instance_type: mac_mini_m2
+    scripts:
+      - name: Install create-dmg
+        script: |
+          brew install create-dmg
+
+      - name: Download Assets & Prepare Icon/Background
+        script: |
+          # Download your assets from your public image repo
+          curl -L -o "disk_icon.png" "https://githubusercontent.com"
+          curl -L -o "bg_raw.png" "https://githubusercontent.com"
+
+          # Convert disk_icon.png to icon.icns
+          mkdir -p icon.iconset
+          sips -z 16 16     "disk_icon.png" --out icon.iconset/icon_16x16.png
+          sips -z 32 32     "disk_icon.png" --out icon.iconset/icon_16x16@2x.png
+          sips -z 32 32     "disk_icon.png" --out icon.iconset/icon_32x32.png
+          sips -z 64 64     "disk_icon.png" --out icon.iconset/icon_32x32@2x.png
+          sips -z 128 128   "disk_icon.png" --out icon.iconset/icon_128x128.png
+          sips -z 256 256   "disk_icon.png" --out icon.iconset/icon_128x128@2x.png
+          sips -z 256 256   "disk_icon.png" --out icon.iconset/icon_256x256.png
+          sips -z 512 512   "disk_icon.png" --out icon.iconset/icon_256x256@2x.png
+          sips -z 512 512   "disk_icon.png" --out icon.iconset/icon_512x512.png
+          sips -z 1024 1024 "disk_icon.png" --out icon.iconset/icon_512x512@2x.png
+          iconutil -c icns icon.iconset
+
+          # Resize background to 660x400
+          sips -z 400 660 "bg_raw.png" --out "bg_final.png"
+
+      - name: Package BPLE.dmg
+        script: |
+          # Make sure BPLE-2022.1-4.app is in the root of this repo (or unzipped here)
+          chmod -R +x "BPLE-2022.1-4.app"
+
+          create-dmg \
+            --volname "BPLE" \
+            --volicon "icon.icns" \
+            --background "bg_final.png" \
+            --window-pos 200 120 \
+            --window-size 660 400 \
+            --icon-size 110 \
+            --icon "BPLE-2022.1-4.app" 185 180 \
+            --hide-extension "BPLE-2022.1-4.app" \
+            --app-drop-link 475 180 \
+            --skip-jenkins \
+            "BPLE.dmg" \
+            "BPLE-2022.1-4.app"
+
+    artifacts:
+      - BPLE.dmg
