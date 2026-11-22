@@ -54,8 +54,11 @@ workflows:
             --icon "$APP_NAME" 180 245 \
             --hide-extension "$APP_NAME" \
             --app-drop-link 480 245 \
+            --no-internet-enable \
+            --skip-jenkins \
             "output/BPLE.dmg" \
             "./dmg_source/"
+
 
     artifacts:
       - output/*.dmg
