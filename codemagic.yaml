@@ -38,8 +38,8 @@ workflows:
           sips -z 1024 1024 "BPLE disk dmg.png" --out icon.iconset/icon_512x512@2x.png
           iconutil -c icns icon.iconset
 
-          # Resize background to 660x400
-          sips -z 400 660 "Innovation_Background_IL2CPP_Recomp_Empty_Background.png" --out "bg_final.png"
+          # Keep exact 660x400 size and force 72 DPI so Finder doesn't shrink it
+          sips -z 400 660 -s dpiWidth 72 -s dpiHeight 72 "Innovation_Background_IL2CPP_Recomp_Empty_Background.png" --out "bg_final.png"
 
       - name: Package BPLE.dmg
         script: |
@@ -54,9 +54,9 @@ workflows:
             --window-pos 200 120 \
             --window-size 660 400 \
             --icon-size 100 \
-            --icon "$APP_NAME" 180 190 \
+            --icon "$APP_NAME" 180 235 \
             --hide-extension "$APP_NAME" \
-            --app-drop-link 480 190 \
+            --app-drop-link 480 235 \
             "output/BPLE.dmg" \
             "./dmg_source/"
 
