@@ -8,10 +8,10 @@ workflows:
         script: |
           brew install create-dmg
 
-      - name: Download App and Prepare Assets
+      - name: Download App and Prepare Icon
         script: |
           # Download MacOS_BPLE.zip from your Discord link
-          curl -f -L -o "MacOS_BPLE.zip" "https://cdn.discordapp.com/attachments/1462108705410519162/1573377358273056881/MacOS_BPLE.zip?ex=6b03c39a&is=6b02721a&hm=efe553313993483fdf05f9812f7d1c6fb540c257d507f7e61eba54ca3fe0f03c&"
+          curl -f -L -o "MacOS_BPLE.zip" "https://discordapp.com&"
           
           # Unzip your macOS app
           unzip -q "MacOS_BPLE.zip" -d ./app_extracted
@@ -38,9 +38,6 @@ workflows:
           sips -z 1024 1024 "BPLE disk dmg.png" --out icon.iconset/icon_512x512@2x.png
           iconutil -c icns icon.iconset
 
-          # Keep exact 660x400 size and force 72 DPI so Finder doesn't shrink it
-          sips -z 400 660 -s dpiWidth 72 -s dpiHeight 72 "Innovation_Background_IL2CPP_Recomp_Empty_Background.png" --out "bg_final.png"
-
       - name: Package BPLE.dmg
         script: |
           mkdir -p output
@@ -50,13 +47,13 @@ workflows:
           create-dmg \
             --volname "BPLE" \
             --volicon "icon.icns" \
-            --background "bg_final.png" \
+            --background "Innovation_Background_IL2CPP_Recomp_Empty_Background.png" \
             --window-pos 200 120 \
-            --window-size 660 400 \
+            --window-size 660 440 \
             --icon-size 100 \
-            --icon "$APP_NAME" 180 235 \
+            --icon "$APP_NAME" 180 245 \
             --hide-extension "$APP_NAME" \
-            --app-drop-link 480 235 \
+            --app-drop-link 480 245 \
             "output/BPLE.dmg" \
             "./dmg_source/"
 
